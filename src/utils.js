@@ -1,4 +1,4 @@
-export function format(totalSeconds) {
+export function formatSecondsIntoMMSS(totalSeconds) {
   const minutes = Math.floor(totalSeconds / 60);
   const seconds = totalSeconds % 60;
 
