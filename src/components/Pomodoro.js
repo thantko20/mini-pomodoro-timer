@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback, useRef } from 'react';
+import { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import {
   Button,
   ButtonGroup,
@@ -11,34 +11,16 @@ import {
   VStack,
 } from '@chakra-ui/react';
 import { formatSecondsIntoMMSS } from '../utils';
-
-const initialPomoSettings = {
-  // In seconds
-  pomoDuration: 1500,
-  breakDuration: 300,
-  autoChangeMode: true,
-};
-
-const usePomoSettings = () => {
-  const [settings, setSettings] = useState(initialPomoSettings);
-
-  const toggleAutoChangeMode = () => {
-    setSettings((prev) => ({ ...prev, autoChangeMode: !prev.autoChangeMode }));
-  };
-
-  return { settings, toggleAutoChangeMode };
-};
-
-const initialPomoState = {
-  mode: 'POMO', // 'POMO' or 'BREAK'
-  timeRemain: initialPomoSettings.pomoDuration,
-  isActive: false,
-};
+import { usePomoSettings } from './PomodoroSettingsProvider';
 
 const usePomodoro = () => {
-  const { settings, toggleAutoChangeMode } = usePomoSettings();
-  const [{ mode, timeRemain, isActive }, setPomoState] =
-    useState(initialPomoState);
+  const { pomoDuration, breakDuration, autoChangeMode, toggleAutoChangeMode } =
+    usePomoSettings();
+  const [{ mode, timeRemain, isActive }, setPomoState] = useState({
+    mode: 'POMO', // 'POMO' or 'BREAK'
+    timeRemain: pomoDuration,
+    isActive: false,
+  });
 
   const launch = useRef();
 
@@ -47,8 +29,7 @@ const usePomodoro = () => {
   }, []);
 
   const timePercentageValue = () => {
-    const totalTime =
-      mode === 'POMO' ? settings.pomoDuration : settings.breakDuration;
+    const totalTime = mode === 'POMO' ? pomoDuration : breakDuration;
     return (timeRemain / totalTime) * 100;
   };
 
@@ -56,14 +37,14 @@ const usePomodoro = () => {
     (mode, isActive = false) => {
       clearInterval(launch.current);
       if (mode === 'POMO') {
-        setPomoState({ mode, timeRemain: settings.pomoDuration, isActive });
+        setPomoState({ mode, timeRemain: pomoDuration, isActive });
       } else {
-        setPomoState({ mode, timeRemain: settings.breakDuration, isActive });
+        setPomoState({ mode, timeRemain: breakDuration, isActive });
       }
 
       launch.current = isActive && setInterval(handleInterval, 1000);
     },
-    [settings.breakDuration, settings.pomoDuration, handleInterval],
+    [breakDuration, pomoDuration, handleInterval],
   );
 
   const startTimer = () => {
@@ -90,9 +71,9 @@ const usePomodoro = () => {
       mode === 'POMO'
         ? showNotification('Pomodoro session has ended. Time to take a break')
         : showNotification("Break session has ended. Let's study!");
-      changeMode(newMode, settings.autoChangeMode);
+      changeMode(newMode, autoChangeMode);
     }
-  }, [timeRemain, changeMode, mode, settings.autoChangeMode]);
+  }, [timeRemain, changeMode, mode, autoChangeMode]);
 
   return {
     timePercentageValue: timePercentageValue(),
@@ -102,7 +83,7 @@ const usePomodoro = () => {
     startTimer,
     takeABreak,
     toggleAutoChangeMode,
-    autoChangeMode: settings.autoChangeMode,
+    autoChangeMode: autoChangeMode,
   };
 };
 
