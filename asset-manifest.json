@@ -1,16 +1,16 @@
 {
   "files": {
     "main.css": "/mini-pomodoro-timer/static/css/main.e6c13ad2.css",
-    "main.js": "/mini-pomodoro-timer/static/js/main.0aea0bd8.js",
+    "main.js": "/mini-pomodoro-timer/static/js/main.5581f3b5.js",
     "static/js/787.1ee58fdb.chunk.js": "/mini-pomodoro-timer/static/js/787.1ee58fdb.chunk.js",
     "static/media/ting_sound_effect.wav": "/mini-pomodoro-timer/static/media/ting_sound_effect.f5b96684ccf3af04297d.wav",
     "index.html": "/mini-pomodoro-timer/index.html",
     "main.e6c13ad2.css.map": "/mini-pomodoro-timer/static/css/main.e6c13ad2.css.map",
-    "main.0aea0bd8.js.map": "/mini-pomodoro-timer/static/js/main.0aea0bd8.js.map",
+    "main.5581f3b5.js.map": "/mini-pomodoro-timer/static/js/main.5581f3b5.js.map",
     "787.1ee58fdb.chunk.js.map": "/mini-pomodoro-timer/static/js/787.1ee58fdb.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.e6c13ad2.css",
-    "static/js/main.0aea0bd8.js"
+    "static/js/main.5581f3b5.js"
   ]
 }
