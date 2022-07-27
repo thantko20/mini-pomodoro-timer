@@ -1,4 +1,5 @@
 import { Container, Heading, HStack, Link } from '@chakra-ui/react';
+import Settings from './Settings';
 
 const Logo = () => {
   return (
@@ -18,8 +19,9 @@ const NavBar = () => {
   return (
     <header>
       <Container maxW='container.lg'>
-        <HStack py={8} px={[1, 3]}>
+        <HStack py={8} px={[1, 3]} justifyContent='space-between'>
           <Logo />
+          <Settings />
         </HStack>
       </Container>
     </header>

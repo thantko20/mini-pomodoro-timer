@@ -1,18 +1,24 @@
 import { createContext, useContext, useState } from 'react';
 
+// IN SECONDS
+const DEFAULT_POMO_DURATION = 1500; // 25 min
+const DEFAULT_BREAK_DURATION = 300; // 5 min
+
 const PomoSettingsCtx = createContext({
-  pomoDuration: 1500,
-  breakDuration: 300,
+  pomoDuration: DEFAULT_POMO_DURATION,
+  breakDuration: DEFAULT_BREAK_DURATION,
   autoChangeMode: true,
   toggleAutoChangeMode: () => {},
+  handlePomoDurationOnChange: () => {},
+  handleBreakDurationOnChange: () => {},
 });
 
 export const usePomoSettings = () => useContext(PomoSettingsCtx);
 
 const initialPomoSettings = {
   // In seconds
-  pomoDuration: 1500,
-  breakDuration: 300,
+  pomoDuration: DEFAULT_POMO_DURATION,
+  breakDuration: DEFAULT_BREAK_DURATION,
   autoChangeMode: true,
 };
 
@@ -24,6 +30,18 @@ export const PomodoroSettingsProvider = ({ children }) => {
     setSettings((prev) => ({ ...prev, autoChangeMode: !prev.autoChangeMode }));
   };
 
+  const handlePomoDurationOnChange = (valueInMin) => {
+    const valueInSec = valueInMin * 60;
+
+    setSettings((prev) => ({ ...prev, pomoDuration: valueInSec }));
+  };
+
+  const handleBreakDurationOnChange = (valueInMin) => {
+    const valueInSec = valueInMin * 60;
+
+    setSettings((prev) => ({ ...prev, breakDuration: valueInSec }));
+  };
+
   return (
     <PomoSettingsCtx.Provider
       value={{
@@ -31,6 +49,8 @@ export const PomodoroSettingsProvider = ({ children }) => {
         breakDuration,
         autoChangeMode,
         toggleAutoChangeMode,
+        handlePomoDurationOnChange,
+        handleBreakDurationOnChange,
       }}
     >
       {children}

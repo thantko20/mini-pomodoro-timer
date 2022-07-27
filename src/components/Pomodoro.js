@@ -1,26 +1,27 @@
-import { useState, useEffect, useCallback, useRef, useContext } from 'react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect, useCallback, useRef } from 'react';
 import {
   Button,
   ButtonGroup,
   CircularProgress,
   CircularProgressLabel,
   Container,
-  FormControl,
-  FormLabel,
-  Switch,
   VStack,
 } from '@chakra-ui/react';
 import { formatSecondsIntoMMSS } from '../utils';
 import { usePomoSettings } from './PomodoroSettingsProvider';
+import SoundEffect from '../assets/ting_sound_effect.wav';
+import useSoundEffect from '../hooks/useSoundEffect';
 
 const usePomodoro = () => {
-  const { pomoDuration, breakDuration, autoChangeMode, toggleAutoChangeMode } =
-    usePomoSettings();
+  const { pomoDuration, breakDuration, autoChangeMode } = usePomoSettings();
   const [{ mode, timeRemain, isActive }, setPomoState] = useState({
     mode: 'POMO', // 'POMO' or 'BREAK'
     timeRemain: pomoDuration,
     isActive: false,
   });
+
+  const playSound = useSoundEffect(SoundEffect);
 
   const launch = useRef();
 
@@ -67,13 +68,29 @@ const usePomodoro = () => {
 
   useEffect(() => {
     if (timeRemain === -1) {
+      playSound();
       const newMode = mode === 'POMO' ? 'BREAK' : 'POMO';
       mode === 'POMO'
         ? showNotification('Pomodoro session has ended. Time to take a break')
         : showNotification("Break session has ended. Let's study!");
       changeMode(newMode, autoChangeMode);
     }
-  }, [timeRemain, changeMode, mode, autoChangeMode]);
+  }, [
+    timeRemain,
+    changeMode,
+    mode,
+    autoChangeMode,
+    pomoDuration,
+    breakDuration,
+  ]);
+
+  useEffect(() => {
+    if (mode === 'POMO') {
+      setPomoState((prev) => ({ ...prev, timeRemain: pomoDuration }));
+    } else {
+      setPomoState((prev) => ({ ...prev, timeRemain: breakDuration }));
+    }
+  }, [breakDuration, pomoDuration]);
 
   return {
     timePercentageValue: timePercentageValue(),
@@ -82,8 +99,6 @@ const usePomodoro = () => {
     stopTimer,
     startTimer,
     takeABreak,
-    toggleAutoChangeMode,
-    autoChangeMode: autoChangeMode,
   };
 };
 
@@ -95,8 +110,6 @@ const Pomodoro = () => {
     stopTimer,
     startTimer,
     takeABreak,
-    toggleAutoChangeMode,
-    autoChangeMode,
   } = usePomodoro();
 
   return (
@@ -123,18 +136,6 @@ const Pomodoro = () => {
             Take a break
           </Button>
         </ButtonGroup>
-        <FormControl display='flex' alignItems='center'>
-          <FormLabel htmlFor='changeMode' mb={0}>
-            Auto Change Modes:
-          </FormLabel>
-          <Switch
-            onChange={toggleAutoChangeMode}
-            isChecked={autoChangeMode}
-            colorScheme='red'
-            id='changeMode'
-            size='lg'
-          />
-        </FormControl>
       </VStack>
     </Container>
   );
