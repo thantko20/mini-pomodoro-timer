@@ -63,6 +63,7 @@ const usePomodoro = () => {
   };
 
   const showNotification = (description) => {
+    if (!('Notification' in window)) return;
     new Notification(description);
   };
 
@@ -70,9 +71,11 @@ const usePomodoro = () => {
     if (timeRemain === -1) {
       playSound();
       const newMode = mode === 'POMO' ? 'BREAK' : 'POMO';
-      mode === 'POMO'
-        ? showNotification('Pomodoro session has ended. Time to take a break')
-        : showNotification("Break session has ended. Let's study!");
+
+      // Disable due to a bug in mobile browsers
+      // mode === 'POMO'
+      //   ? showNotification('Pomodoro session has ended. Time to take a break')
+      //   : showNotification("Break session has ended. Let's study!");
       changeMode(newMode, autoChangeMode);
     }
   }, [
